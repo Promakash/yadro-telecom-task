@@ -1,9 +1,6 @@
 #pragma once
 
 #include <string>
-#include <utility>
-#include <sstream>
-#include "time_utils.h"
 
 enum class EventID {
     COME = 1,
@@ -23,64 +20,27 @@ protected:
     unsigned int TableID_;
 
 public:
-    Event() = default;
+    Event();
 
-    Event(const EventID id, const unsigned int time, std::string username, const unsigned int table_id)
-        : ID_(id)
-          , Time_(time)
-          , Username_(std::move(username))
-          , TableID_(table_id){
-    }
+    Event(EventID id, unsigned int time, std::string username, unsigned int table_id);
 
-    Event(const Event& other)
-        : ID_(other.ID_)
-          , Time_(other.Time_)
-          , Username_(other.Username_)
-          , TableID_(other.TableID_) {
-    }
+    Event(const Event &other);
 
-    std::string ToString() const {
-        std::ostringstream result;
+    std::string ToString() const;
 
-        result << TimeUtils::TimeToString(Time_) << ' '
-               << static_cast<int>(ID_) << ' '
-               << Username_;
-        if (TableID_ != 0) {
-            result << ' ' << TableID_;
-        }
+    EventID GetID() const;
 
-        return result.str();
-    }
+    void SetID(EventID id);
 
-    EventID GetID() const {
-        return ID_;
-    }
+    unsigned int GetTime() const;
 
-    void SetID(const EventID id) {
-        ID_ = id;
-    }
+    void SetTime(unsigned int time);
 
-    unsigned int GetTime() const {
-        return Time_;
-    }
+    std::string GetUsername() const;
 
-    void SetTime(const unsigned int time) {
-        Time_ = time;
-    }
+    void SetUsername(const std::string &username);
 
-    std::string GetUsername() const {
-        return Username_;
-    }
+    void SetTableID(unsigned int table_id);
 
-    void SetUsername(const std::string &username) {
-        Username_ = username;
-    }
-
-    void SetTableID(const unsigned int table_id) {
-        TableID_ = table_id;
-    }
-
-    unsigned int GetTableID() const {
-        return TableID_;
-    }
+    unsigned int GetTableID() const;
 };

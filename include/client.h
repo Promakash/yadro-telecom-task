@@ -1,6 +1,6 @@
 #pragma once
 
-#include "string"
+#include <string>
 
 enum class ClientStatus {
   AT_CLUB = 1,
@@ -12,30 +12,19 @@ class Client {
 private:
   std::string Name_;
   ClientStatus Status_;
+
 public:
-  Client() {
-    Status_ = ClientStatus::AT_CLUB;
-  }
+  Client();
 
-  Client(const std::string& name) : Client() {
-    Name_ = name;
-  }
+  explicit Client(std::string &name);
 
-  std::string GetName() {
-    return Name_;
-  }
+  std::string GetName() const;
 
-  void SetName(const std::string& name) {
-    Name_ = name;
-  }
+  void SetName(const std::string &name);
 
-  void SetStatus(const ClientStatus status) {
-    Status_ = status;
-  }
+  void SetStatus(ClientStatus status);
 
-  ClientStatus GetStatus() const {
-    return Status_;
-  }
+  ClientStatus GetStatus() const;
 
-  ~Client() = default;
+  ~Client();
 };
