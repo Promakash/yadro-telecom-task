@@ -7,6 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 include_directories(include)
+include_directories(util)
 
 set(SOURCE_FILES
         source/main.cpp
@@ -15,6 +16,8 @@ set(SOURCE_FILES
         source/event_handler.cpp
         source/client.cpp
         source/table.cpp
+        source/validator.cpp
+        source/event_response.cpp
 )
 
 add_executable(task ${SOURCE_FILES})
