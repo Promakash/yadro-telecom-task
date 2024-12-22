@@ -5,7 +5,7 @@
 #include <iostream>
 #include "club.h"
 
-TEST_CASE("Valid data with output redirection to file") {
+TEST_CASE("Valid data") {
     const std::string valid_file = std::string(TEST_DATA_DIR) + "/test_file.txt";
     const std::string expected_output_file = std::string(TEST_DATA_DIR) + "/expected_output.txt";
     const std::string actual_output_file = "actual_output.txt";

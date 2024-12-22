@@ -31,7 +31,7 @@ include(cmake/Utils.cmake)
 
 include_catch2()
 
-add_executable_test(test_validator ${SOURCE_FILES})
+add_executable_test(test_validator tests/test_validator.cpp ${SOURCE_FILES})
 
 target_compile_definitions(test_validator PRIVATE TEST_DATA_DIR="${CMAKE_SOURCE_DIR}/tests/static")
 
