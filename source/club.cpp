@@ -34,6 +34,7 @@ EventResponse Club::AddClient(const Event &event) {
     return {event, EventResponseErrorCodes::NOTHING, event.GetID()};
 }
 
+//Возвращает std::vector<EventResponse> так как возможна генерация нового события, при удалении клиента из за стола(занятие этого стола из очереди)
 std::vector<EventResponse> Club::SitClient(const Event &event) {
     std::vector<EventResponse> responses;
 
@@ -54,9 +55,7 @@ std::vector<EventResponse> Club::SitClient(const Event &event) {
     auto table_id_ptr = Clients_Tables_.find(client_id);
     if (table_id_ptr != Clients_Tables_.end()) {
         const unsigned int current_table_id = table_id_ptr->second;
-        TablesVec_[current_table_id - 1].DispatchOwnership(event.GetTime());
-        Clients_Tables_.erase(client_id);
-        responses.emplace_back(event, EventResponseErrorCodes::NOTHING, event.GetID());
+        ReleaseTable(client_id, current_table_id, event, responses);
 
         Event new_event(event);
         new_event.SetTableID(current_table_id);
@@ -72,8 +71,6 @@ std::vector<EventResponse> Club::SitClient(const Event &event) {
 
     TablesVec_[table_id - 1].SetNewOwnership(event.GetTime());
     Clients_Tables_[client_id] = table_id;
-
-    ClientsByID_[client_id].SetStatus(ClientStatus::PLAYING);
 
     return responses;
 }
@@ -91,8 +88,7 @@ EventResponse Club::PutClientInQueue(const Event &event) {
     unsigned int client_id = client_id_ptr->second;
 
     if (ClientsQueueByID_.size() >= MaxTables_) {
-        ClientsIDsByName_.erase(event.GetUsername());
-        ClientsIDsByName_.erase(client_id_ptr);
+        RemoveClientFromClub(event.GetUsername(), client_id);
         return {event, EventResponseErrorCodes::NOTHING, EventID::LEAVE_AT_CLOSING};
     }
 
@@ -100,6 +96,7 @@ EventResponse Club::PutClientInQueue(const Event &event) {
     return {event, EventResponseErrorCodes::NOTHING, event.GetID()};
 }
 
+//Возвращает std::vector<EventResponse> так как возможна генерация нового события, при удалении клиента из за стола(занятие этого стола из очереди)
 std::vector<EventResponse> Club::RemoveClient(const Event &event) {
     std::vector<EventResponse> responses;
     auto client_id_ptr = ClientsIDsByName_.find(event.GetUsername());
@@ -113,11 +110,8 @@ std::vector<EventResponse> Club::RemoveClient(const Event &event) {
 
     if (table_id_ptr != Clients_Tables_.end()) {
         const unsigned int current_table_id = table_id_ptr->second;
-        TablesVec_[current_table_id - 1].DispatchOwnership(event.GetTime());
-        Clients_Tables_.erase(client_id);
-        ClientsIDsByName_.erase(event.GetUsername());
-        ClientsByID_.erase(client_id);
-        responses.emplace_back(event, EventResponseErrorCodes::NOTHING, event.GetID());
+        ReleaseTable(client_id, current_table_id, event, responses);
+        RemoveClientFromClub(event.GetUsername(), client_id);
 
         Event new_event(event);
         new_event.SetTableID(current_table_id);
@@ -142,15 +136,14 @@ std::pair<bool, Event> Club::GetClientFromQueue(const Event &event) {
     }
 
     unsigned int table_id = event.GetTableID();
-    unsigned int user_id = ClientsQueueByID_.front();
+    unsigned int client_id = ClientsQueueByID_.front();
     ClientsQueueByID_.pop();
 
-    auto client_ptr = ClientsByID_.find(user_id);
+    auto client_ptr = ClientsByID_.find(client_id);
     std::string username = client_ptr->second.GetName();
 
-    client_ptr->second.SetStatus(ClientStatus::PLAYING);
     TablesVec_[table_id - 1].SetNewOwnership(event.GetTime());
-    Clients_Tables_[user_id] = table_id;
+    Clients_Tables_[client_id] = table_id;
 
     Event response_event{EventID::SIT_FROM_QUEUE, event.GetTime(), std::move(username), table_id};
     return {true, std::move(response_event)};
@@ -180,6 +173,18 @@ void Club::CloseDay() {
         }
         table.PrintTotalRevenueByDay();
     }
+}
+
+void Club::ReleaseTable(unsigned int client_id, unsigned int current_table_id, const Event &event,
+                        std::vector<EventResponse> &responses) {
+    TablesVec_[current_table_id - 1].DispatchOwnership(event.GetTime());
+    Clients_Tables_.erase(client_id);
+    responses.emplace_back(event, EventResponseErrorCodes::NOTHING, event.GetID());
+}
+
+void Club::RemoveClientFromClub(const std::string &username, const unsigned int client_id) {
+    ClientsIDsByName_.erase(username);
+    ClientsByID_.erase(client_id);
 }
 
 Club::Club(const std::string &file_path) : Handler_(file_path) {

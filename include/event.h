@@ -2,6 +2,7 @@
 
 #include <string>
 
+//Перечисление всех ID событий, которые могут быть
 enum class EventID {
     COME = 1,
     SIT = 2,
@@ -12,6 +13,7 @@ enum class EventID {
     ERROR = 13
 };
 
+// Сущность событие, хранит в себе информацию об исходящих событиях
 class Event {
 protected:
     EventID ID_;

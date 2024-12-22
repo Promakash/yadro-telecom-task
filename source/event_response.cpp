@@ -28,12 +28,7 @@ std::string EventResponse::ToString() const {
     if (ResultCode_ == EventID::ERROR) {
         std::ostringstream result;
         result << TimeUtils::TimeToString(Event_.GetTime()) << ' '
-               << static_cast<unsigned int>(ResultCode_) << ' '
-               << Event_.GetUsername();
-
-        if (Event_.GetTableID() != 0) {
-            result << ' ' << Event_.GetTableID();
-        }
+               << static_cast<unsigned int>(ResultCode_);
 
         if (Description_ != EventResponseErrorCodes::NOTHING) {
             result << ' ' << EventResponseCodeToString(Description_);

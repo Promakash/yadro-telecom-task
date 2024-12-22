@@ -3,6 +3,7 @@
 #include <regex>
 #include <string>
 
+//Класс валидации для проверки формата исходных данных
 class Validator {
 private:
     std::regex UIntValuePattern_{"^[1-9][0-9]*$"};

@@ -1,5 +1,6 @@
 #pragma once
 
+//Сущность стола. Предоставляет функционал подсчета итоговой выручки, а так же считает время, проведенное клиентами за ним
 class Table {
 private:
   const unsigned int ID_;
@@ -27,9 +28,12 @@ public:
 
   unsigned int GetTotalBusyTime() const;
 
+  //Задает нового владельца стола
   void SetNewOwnership(unsigned int time);
 
+  //Освобождает стол, делая его доступным для клиентов. Просчитывает время, занятое клиентом
   void DispatchOwnership(unsigned int time);
 
+  //Выводит данные о выручке за день
   void PrintTotalRevenueByDay();
 };

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+//Класс обработчик событий, предоставляющий функционал обработки событий из файла, и вывода обработки результата события
 class EventHandler {
 private:
   std::ifstream FileStream_;

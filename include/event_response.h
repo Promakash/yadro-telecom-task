@@ -3,6 +3,7 @@
 #include "event.h"
 #include <string>
 
+//Перечисление кодов ответов на события
 enum class EventResponseErrorCodes {
     ALREADY_AT_CLUB = 1,
     NOT_WORKING_HOURS = 2,
@@ -12,6 +13,7 @@ enum class EventResponseErrorCodes {
     NOTHING = 6
 };
 
+//Класс ответа обработки исходящего события, хранит в себе базовое событие, ответом на которое он является
 class EventResponse {
 private:
     Event Event_;
